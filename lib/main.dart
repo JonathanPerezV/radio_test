@@ -1,7 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:radio_test_player/src/pages/radio_test.dart';
+import 'package:radio_test_player/firebase_options.dart';
+import 'package:radio_test_player/src/pages/radio/radio_test.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,10 +19,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-     routes: {
-      "radio_player": (_) => RadioPage()
-     },
-     initialRoute: "radio_player",
+      routes: {"radio_player": (_) => const RadioPage()},
+      initialRoute: "radio_player",
     );
   }
 }
+
+
+//todo DEVELOPER APP:
+//todo Tec. Jonathan Pérez
+//todo 0994911674
+//todo jonathan.perez1999@hotmail.com

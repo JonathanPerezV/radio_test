@@ -74,59 +74,60 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
                   onPressed: () async {
                     widget.addSourceFunction();
                   },
-                  child: const Text("Add sources"),
+                  child: const Text("Reproducir"),
                 )
               : Center(
                   child: Column(
-                      children: [
-                        //Text(currentPlaying),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                           /* IconButton(
+                    children: [
+                      //Text(currentPlaying),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          /* IconButton(
                               onPressed: () async {
                                 widget.flutterRadioPlayer.previous();
                                 resetNowPlayingInfo();
                               },
                               icon: const Icon(Icons.skip_previous),
                             ),*/
-                            Padding(
+                          /*Padding(
                               padding: const EdgeInsets.only(right: 20),
-                              child: IconButton(
-                                color: Colors.white,
-                                onPressed: () async {
-                                  widget.flutterRadioPlayer.playOrPause();
-                                  resetNowPlayingInfo();
-                                },
-                                icon: statusIcon,
-                              ),
-                            ),
-                           /* IconButton(
+                              child:*/
+                          IconButton(
+                            color: Colors.white,
+                            onPressed: () async {
+                              widget.flutterRadioPlayer.playOrPause();
+                              resetNowPlayingInfo();
+                            },
+                            icon: statusIcon,
+                            //),
+                          ),
+                          /* IconButton(
                               onPressed: () async {
                                 widget.flutterRadioPlayer.stop();
                                 resetNowPlayingInfo();
                               },
                               icon: const Icon(Icons.stop_circle_outlined),
                             ),*/
-                            /*IconButton(
+                          /*IconButton(
                               onPressed: () async {
                                 widget.flutterRadioPlayer.next();
                                 resetNowPlayingInfo();
                               },
                               icon: const Icon(Icons.skip_next),
                             ),*/
-                          ],
-                        ),
-                        Slider(
-                          value: volume,
-                          onChanged: (value) {
-                            setState(() {
-                              volume = value;
-                              widget.flutterRadioPlayer.setVolume(volume);
-                            });
-                          },
-                        )
-                      ],
+                        ],
+                      ),
+                      Slider(
+                        value: volume,
+                        onChanged: (value) {
+                          setState(() {
+                            volume = value;
+                            widget.flutterRadioPlayer.setVolume(volume);
+                          });
+                        },
+                      )
+                    ],
                   ),
                 );
         } else if (latestPlaybackStatus == "flutter_radio_stopped") {
@@ -134,7 +135,7 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
             onPressed: () async {
               widget.addSourceFunction();
             },
-            child: const Text("Add sources"),
+            child: const Text("Reproducir"),
           );
         }
         return const Text("Determining state ...");

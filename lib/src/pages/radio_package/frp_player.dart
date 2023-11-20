@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_radio_player/flutter_radio_player.dart';
 import 'package:flutter_radio_player/models/frp_source_modal.dart';
-import 'package:radio_test_player/src/pages/fps_source_list.dart';
-import 'package:radio_test_player/src/pages/frp_controlls.dart';
+import 'package:radio_test_player/src/pages/radio_package/frp_controlls.dart';
+
 class FRPlayer extends StatefulWidget {
   final FlutterRadioPlayer flutterRadioPlayer;
   final FRPSource frpSource;

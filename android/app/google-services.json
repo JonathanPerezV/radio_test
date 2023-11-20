@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "451152347226",
+    "firebase_url": "https://radio-db-2c0ea-default-rtdb.firebaseio.com",
+    "project_id": "radio-db-2c0ea",
+    "storage_bucket": "radio-db-2c0ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451152347226:android:ae349a945958b9ef259863",
+        "android_client_info": {
+          "package_name": "com.example.radio_test_player"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKmXJcRbUFXqIOQi8DOWQLEXVxLzJxc5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
