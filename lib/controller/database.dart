@@ -31,23 +31,49 @@ class FireBaseDB {
       {required String nombre,
       required String apellido,
       required String contrasena,
+      required String telefono,
       required String correo}) async {
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
 
-    final id = (await getLastUser()) + 1;
-
-    final ref = rtdb.ref("usuario/$id");
+    final ref = rtdb.ref("usuario/$telefono");
 
     final user = {
-      "id_usuario": id,
+      "id_usuario": correo,
       "nombre": nombre,
       "apellido": apellido,
+      "telefono": telefono,
       "contrasena": contrasena,
       "correo": correo
     };
 
     await ref.set(user);
+  }
+
+  Future<String> authUser(
+      {required String password, required String phone}) async {
+    final rtdb =
+        FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
+
+    final ref = await rtdb.ref("usuario").child(phone).get();
+
+    if (ref.exists) {
+      print("usuario: ${ref.child("nombre").value}");
+
+      final data = await rtdb.ref("usuario/$phone").child("contrasena").get();
+
+      if (data.exists) {
+        if (data.child("contrasena").value.toString() == password) {
+          return "ok";
+        } else {
+          return "Contraseña incorrecta";
+        }
+      } else {
+        return "Contraseña incorrecta";
+      }
+    } else {
+      return "Celular incorrecto";
+    }
   }
 
   //TODO CHAT

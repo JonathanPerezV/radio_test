@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.radioTestPlayer</string>
+	<string>com.jonathan.radio</string>
 	<key>PROJECT_ID</key>
 	<string>radio-db-2c0ea</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,7 +25,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:451152347226:ios:2b1239c8db22a501259863</string>
+	<string>1:451152347226:ios:a427e1ca467c111b259863</string>
 	<key>DATABASE_URL</key>
 	<string>https://radio-db-2c0ea-default-rtdb.firebaseio.com</string>
 </dict>

@@ -24,18 +24,20 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
-          elevation: 2,
+          elevation: 3,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
+                borderRadius: BorderRadius.circular(10), color: Colors.red
+                /*gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
                       Colors.blueAccent,
                       Color.fromRGBO(33, 29, 82, 1)
-                    ])),
+                    ])*/
+                ),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -61,18 +63,20 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
-          // color: Color.fromRGBO(33, 29, 82, 1),
-          elevation: 2,
+          shadowColor: Colors.grey,
+          //color: Color.fromRGBO(33, 29, 82, 1),
+          elevation: 3,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
+                borderRadius: BorderRadius.circular(10), color: Colors.green
+                /*gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
                       Colors.blueAccent,
                       Color.fromRGBO(33, 29, 82, 1)
-                    ])),
+                    ])*/
+                ),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -98,30 +102,32 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
-          elevation: 2,
+          elevation: 3,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
+                borderRadius: BorderRadius.circular(10), color: Colors.white
+                /*gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
                       Colors.blueAccent,
                       Color.fromRGBO(33, 29, 82, 1)
-                    ])),
+                    ])*/
+                ),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     "Cobertura",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   ),
                   SizedBox(width: 5),
                   Icon(
                     Icons.map,
-                    color: Colors.white,
+                    color: Colors.black,
                   )
                 ],
               ),
@@ -135,18 +141,21 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
-          elevation: 2,
+          elevation: 3,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
+                color: Colors.blue.shade900
+                /*gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
                       Colors.blueAccent,
                       Color.fromRGBO(33, 29, 82, 1)
-                    ])),
+                    ])*/
+                ),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -172,9 +181,14 @@ class _RadioPageState extends State<RadioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(33, 29, 82, 1),
       appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(33, 29, 82, 1),
         centerTitle: true,
-        title: const Text('Radio Horizontes'),
+        title: const Text(
+          'Radio Horizontes',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
@@ -186,17 +200,21 @@ class _RadioPageState extends State<RadioPage> {
             child: SizedBox(
               height: 150,
               child: Card(
-                elevation: 2,
+                shadowColor: Colors.grey,
+                //color: Color.fromRGBO(33, 29, 82, 1),
+                elevation: 5,
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      gradient: const LinearGradient(
+                      color: Colors.yellow
+                      /*gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
                             Colors.blueAccent,
                             Color.fromRGBO(33, 29, 82, 1)
-                          ])),
+                          ])*/
+                      ),
                   child: ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
@@ -207,11 +225,11 @@ class _RadioPageState extends State<RadioPage> {
                       children: [
                         Text("Escucha aquí",
                             style:
-                                TextStyle(color: Colors.white, fontSize: 30)),
+                                TextStyle(color: Colors.black, fontSize: 30)),
                         SizedBox(width: 10),
                         Icon(
                           Icons.headphones,
-                          color: Colors.white,
+                          color: Colors.black,
                           size: 35,
                         )
                       ],

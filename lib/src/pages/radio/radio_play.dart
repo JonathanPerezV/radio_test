@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radio_player/flutter_radio_player.dart';
 import 'package:flutter_radio_player/models/frp_source_modal.dart';
 import 'package:radio_test_player/controller/database.dart';
+import 'package:radio_test_player/controller/preferences/user_preferences.dart';
+import 'package:radio_test_player/src/pages/login/login_page.dart';
 import 'package:radio_test_player/src/pages/radio_package/frp_player.dart';
 
 class PlayRadio extends StatefulWidget {
@@ -15,6 +19,7 @@ class PlayRadio extends StatefulWidget {
 }
 
 class _PlayRadioState extends State<PlayRadio> {
+  late Timer timer;
   final db = FireBaseDB();
 
   ScrollController controller = ScrollController();
@@ -46,6 +51,14 @@ class _PlayRadioState extends State<PlayRadio> {
     _flutterRadioPlayer.initPlayer();
     _flutterRadioPlayer.addMediaSources(frpSource);
     _flutterRadioPlayer.play();
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() => controller.animateTo(
+            controller.position.maxScrollExtent,
+            duration: const Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn,
+          ));
+    });
   }
 
   @override
@@ -62,7 +75,7 @@ class _PlayRadioState extends State<PlayRadio> {
         onTap: () {
           FocusScope.of(context).unfocus();
           setState(() => visibility = true);
-          _flutterRadioPlayer.play();
+          _flutterRadioPlayer.addMediaSources(frpSource);
         },
         child: Scaffold(
           backgroundColor: const Color.fromRGBO(33, 29, 82, 1),
@@ -159,7 +172,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                         Align(
                                           alignment: Alignment.centerRight,
                                           child: Container(
-                                            width: 20,
+                                            width: 25,
                                             child: Text(
                                               snapshot
                                                   .child("time")
@@ -188,74 +201,111 @@ class _PlayRadioState extends State<PlayRadio> {
                         child: Container(
                           color: const Color.fromRGBO(33, 29, 82, 1),
                           padding: const EdgeInsets.only(left: 5, right: 5),
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            controller: txtMessage,
-                            scrollPadding: EdgeInsets.zero,
-                            onTap: () {
-                              setState(() => visibility = false);
-                              setState(() => controller.animateTo(
-                                    controller.position.maxScrollExtent,
-                                    duration: const Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn,
-                                  ));
-                            },
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.only(left: 15),
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    if (txtMessage.text.isEmpty) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (builder) {
-                                            return AlertDialog(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          25)),
-                                              title: Text("Campo vacío"),
-                                              content: Text(
-                                                  "El campo no puede enviarse vacío."),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text("Ok"))
-                                              ],
-                                            );
-                                          });
-                                    } else {
-                                      await db.insertChat(
-                                          nombre: "Jonathan",
-                                          idUsuario: 1,
-                                          message: txtMessage.text);
+                          child: FutureBuilder(
+                              future: UserPreferences().getLogin(),
+                              builder:
+                                  (context, AsyncSnapshot<bool?> snapshot) {
+                                bool enable = snapshot.hasData;
 
-                                      setState(() => txtMessage.clear());
-
-                                      Future.delayed(
-                                              const Duration(milliseconds: 200))
-                                          .then((value) => setState(() =>
-                                              controller.animateTo(
-                                                controller
-                                                    .position.maxScrollExtent,
-                                                duration:
-                                                    const Duration(seconds: 1),
-                                                curve: Curves.fastOutSlowIn,
-                                              )));
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if (!enable) {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (builder) =>
+                                                  LoginPage())).then((value) =>
+                                          _flutterRadioPlayer
+                                              .addMediaSources(frpSource));
                                     }
                                   },
-                                  icon: const Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 25,
+                                  child: TextField(
+                                    style: TextStyle(color: Colors.white),
+                                    controller: txtMessage,
+                                    scrollPadding: EdgeInsets.zero,
+                                    enabled: enable,
+                                    onTap: () {
+                                      setState(() => visibility = false);
+                                      setState(() => controller.animateTo(
+                                            controller.position.maxScrollExtent,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            curve: Curves.fastOutSlowIn,
+                                          ));
+                                    },
+                                    decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.only(left: 15),
+                                        suffixIcon: IconButton(
+                                          onPressed: () async {
+                                            if (txtMessage.text.isEmpty) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (builder) {
+                                                    return AlertDialog(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25)),
+                                                      title:
+                                                          Text("Campo vacío"),
+                                                      content: Text(
+                                                          "El campo no puede enviarse vacío."),
+                                                      actions: [
+                                                        TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context),
+                                                            child: Text("Ok"))
+                                                      ],
+                                                    );
+                                                  });
+                                            } else {
+                                              await db.insertChat(
+                                                  nombre: "Jonathan",
+                                                  idUsuario: 1,
+                                                  message: txtMessage.text);
+
+                                              setState(
+                                                  () => txtMessage.clear());
+
+                                              Future.delayed(const Duration(
+                                                      milliseconds: 200))
+                                                  .then((value) => setState(
+                                                      () =>
+                                                          controller.animateTo(
+                                                            controller.position
+                                                                .maxScrollExtent,
+                                                            duration:
+                                                                const Duration(
+                                                                    seconds: 1),
+                                                            curve: Curves
+                                                                .fastOutSlowIn,
+                                                          )));
+                                            }
+                                          },
+                                          icon: Icon(
+                                            Icons.send,
+                                            color: enable
+                                                ? Colors.white
+                                                : Colors.grey,
+                                            size: 25,
+                                          ),
+                                        ),
+                                        hintStyle: TextStyle(
+                                            color: enable
+                                                ? Colors.white
+                                                : Colors.grey,
+                                            fontSize: 13),
+                                        hintText: "Escriba su mensaje...",
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100))),
                                   ),
-                                ),
-                                hintStyle: const TextStyle(
-                                    color: Colors.white, fontSize: 13),
-                                hintText: "Escriba su mensaje...",
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(100))),
-                          ),
+                                );
+                              }),
                         ),
                       ),
                       Container(
