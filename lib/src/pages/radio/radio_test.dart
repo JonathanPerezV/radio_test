@@ -2,6 +2,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
 
 class RadioPage extends StatefulWidget {
@@ -197,6 +198,23 @@ class _RadioPageState extends State<RadioPage> {
           'Radio Horizontes',
           style: TextStyle(color: Colors.white),
         ),
+        actions: [
+          FutureBuilder<bool?>(
+              future: UserPreferences().getLogin(),
+              builder: (builder, snapshot) {
+                if (snapshot.data != null && snapshot.data!) {
+                  return const Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              })
+        ],
       ),
       body: Column(
         children: [

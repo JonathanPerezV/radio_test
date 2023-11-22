@@ -63,12 +63,15 @@ class FireBaseDB {
 
       if (data.exists) {
         if (data.child("contrasena").value.toString() == password) {
+          final dataName =
+              await rtdb.ref("usuario/$phone").child("nombre").get();
+          final dataPhone =
+              await rtdb.ref("usuario/$phone").child("telefono").get();
 
-          final dataName =  await rtdb.ref("usuario/$phone").child("nombre").get();
-          final dataPhone =  await rtdb.ref("usuario/$phone").child("telefono").get();
-
-          await UserPreferences().saveUserName(dataName.child("nombre").value.toString());
-          await UserPreferences().saveCelular(dataPhone.child("telefono").value.toString());
+          await UserPreferences()
+              .saveUserName(dataName.child("nombre").value.toString());
+          await UserPreferences()
+              .saveCelular(dataPhone.child("telefono").value.toString());
 
           return "ok";
         } else {
@@ -116,12 +119,72 @@ class FireBaseDB {
     final user = {
       "id_chat": id,
       "id_usuario": celular,
-      "date": DateFormat("dd-MM-yyyy").format(DateTime.now()),
+      "date": DateFormat("yyyy-MM-dd").format(DateTime.now()),
       "time": DateFormat("HH:mm").format(DateTime.now()),
       "nombre_usuario": nombre,
       "message": message
     };
 
     await ref.set(user);
+  }
+
+  Future<String> deleteMessageAdmin(String idMessage, context) async {
+    final rtdb =
+        FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
+
+    final phone = await UserPreferences().getCelular();
+
+    final userRef = rtdb.ref("usuario");
+
+    final phoneRef = await userRef.child("$phone").get();
+
+    if (phoneRef.exists) {
+      final chatRef = rtdb.ref("chat");
+
+      final adminRef = await userRef.child("$phone/admin").get();
+
+      if (adminRef.exists) {
+        final messageRef = await chatRef.child(idMessage.toString()).get();
+
+        if (messageRef.exists) {
+          String eliminado = "no";
+          await showDialog(
+              context: context,
+              builder: (builder) {
+                return AlertDialog(
+                  title: Text("Eliminar mensaje"),
+                  content: Text("¿Desea eliminar este mensaje?"),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancelar")),
+                        TextButton(
+                            onPressed: () async {
+                              await chatRef
+                                  .child(idMessage.toString())
+                                  .remove();
+                              eliminado = "si";
+                              Navigator.pop(context, eliminado);
+                            },
+                            child: Text("Eliminar"))
+                      ],
+                    )
+                  ],
+                );
+              });
+
+          return eliminado;
+        } else {
+          return "Error, intentelo más tarde";
+        }
+      } else {
+        return "no";
+      }
+    } else {
+      return "error";
+    }
   }
 }

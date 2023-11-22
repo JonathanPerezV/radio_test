@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_radio_player/models/frp_source_modal.dart';
 import 'package:radio_test_player/controller/database.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/login/login_page.dart';
+import 'package:radio_test_player/src/pages/radio/test.dart';
 import 'package:radio_test_player/src/pages/radio_package/frp_player.dart';
 
 class PlayRadio extends StatefulWidget {
@@ -25,6 +28,7 @@ class _PlayRadioState extends State<PlayRadio> {
   final db = FireBaseDB();
 
   ScrollController controller = ScrollController();
+  double lastScrollPosition = 0;
 
   final txtMessage = TextEditingController();
   String nombreUser = '';
@@ -33,6 +37,20 @@ class _PlayRadioState extends State<PlayRadio> {
   final auth = FirebaseDatabase.instance;
   final ref = FirebaseDatabase.instance.ref('chat');
   bool visibility = true;
+
+  bool downPage = false;
+
+  int chatLeng = 0;
+
+  List<dynamic> listDataChat = [];
+
+  final DatabaseReference _chatRef = FirebaseDatabase.instance.ref("chat");
+
+  Future<void> _getChatDataCount() async {
+    DataSnapshot snapshot = await _chatRef.get();
+
+    setState(() => chatLeng = snapshot.children.length);
+  }
 
   final FlutterRadioPlayer _flutterRadioPlayer = FlutterRadioPlayer();
 
@@ -54,21 +72,57 @@ class _PlayRadioState extends State<PlayRadio> {
     super.initState();
     _flutterRadioPlayer.initPlayer();
     _flutterRadioPlayer.addMediaSources(frpSource);
-    _flutterRadioPlayer.play();
-
+    initPhoneNumber();
+    _getChatDataCount();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() => controller.animateTo(
-            controller.position.maxScrollExtent,
-            duration: const Duration(seconds: 1),
-            curve: Curves.fastOutSlowIn,
-          ));
+      debugPrint("contador: reproduciendose");
+      jumtoMaxScroll();
     });
+
+    controller.addListener(() {
+      double currentPosition = controller.position.pixels;
+
+      if (currentPosition < lastScrollPosition) {
+        setState(() => downPage = true);
+        if (timer.isActive) {
+          timer.cancel();
+        }
+      } else {
+        if (!timer.isActive) {
+          timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+            debugPrint("contador: reproduciendose");
+            jumtoMaxScroll();
+          });
+        }
+      }
+
+      lastScrollPosition = currentPosition;
+    });
+  }
+
+  void jumtoMaxScroll() {
+    setState(() => downPage = false);
+    controller.animateTo(controller.position.maxScrollExtent,
+        duration: const Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+  }
+
+  void initPhoneNumber() async {
+    final data = await UserPreferences().getCelular();
+    final data2 = await UserPreferences().getUsername();
+
+    if (data != null) {
+      setState(() => numeroCelular = data);
+    }
+    if (data2 != null) {
+      setState(() => nombreUser = data2);
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
     _flutterRadioPlayer.stop();
+    timer.cancel();
   }
 
   @override
@@ -153,58 +207,102 @@ class _PlayRadioState extends State<PlayRadio> {
                       Expanded(
                           child: Container(
                         color: const Color.fromRGBO(33, 29, 82, 1),
-                        child: FirebaseAnimatedList(
-                            defaultChild: const Center(
-                                child: CircularProgressIndicator()),
-                            shrinkWrap: true,
-                            controller: controller,
-                            query: ref,
-                            itemBuilder:
-                                (itemBuilderm, snapshot, animation, index) {
-                              return GestureDetector(
-                                onLongPress: () async {},
-                                child: ListTile(
-                                  title: Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "${snapshot.child("nombre_usuario").value}: ${snapshot.child("message").value}",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 13),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Container(
-                                            width: 25,
-                                            child: Text(
-                                              snapshot
-                                                  .child("time")
-                                                  .value
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 7),
+                        child: Stack(
+                          children: [
+                            FirebaseAnimatedList(
+                                defaultChild: const Center(
+                                    child: CircularProgressIndicator()),
+                                shrinkWrap: true,
+                                controller: controller,
+                                query: ref,
+                                itemBuilder:
+                                    (itemBuilder, snapshot, animation, index) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      final result =
+                                          await db.deleteMessageAdmin(
+                                              snapshot.key!, context);
+
+                                      if (result == "si") {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "Menesaje eliminado")));
+                                      } else if (result == "no") {
+                                        print("no es admin");
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(result)));
+                                      }
+                                    },
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Container(
+                                        width: double.infinity,
+                                        alignment: Alignment.centerLeft,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                "${snapshot.child("nombre_usuario").value}: ${snapshot.child("message").value}",
+                                                style: TextStyle(
+                                                    color: snapshot
+                                                                .child(
+                                                                    "id_usuario")
+                                                                .value
+                                                                .toString() ==
+                                                            numeroCelular
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                                    fontSize: 13),
+                                              ),
                                             ),
-                                          ),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Container(
+                                                width: 63,
+                                                child: Text(
+                                                  "${snapshot.child("time").value.toString()} | ${snapshot.child("date").value.toString().split("-")[1]}/${snapshot.child("date").value.toString().split("-")[2]}",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 7),
+                                                ),
+                                              ),
+                                            ),
+                                            Divider(
+                                              height: 10,
+                                              thickness: 0.5,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ],
                                         ),
-                                        Divider(
-                                          height: 10,
-                                          thickness: 0.5,
-                                          color: Colors.grey.shade700,
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            }),
+                                  );
+                                }),
+                            if (downPage)
+                              Positioned(
+                                  right: 5,
+                                  bottom: 10,
+                                  child: GestureDetector(
+                                    onTap: () => jumtoMaxScroll(),
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(255, 255, 255, 70),
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                      child: Icon(Icons
+                                          .keyboard_double_arrow_down_rounded),
+                                    ),
+                                  ))
+                          ],
+                        ),
                       )),
                       Align(
                         alignment: Alignment.bottomCenter,
@@ -216,7 +314,6 @@ class _PlayRadioState extends State<PlayRadio> {
                               builder:
                                   (context, AsyncSnapshot<bool?> snapshot) {
                                 bool? enable = snapshot.hasData;
-
                                 return GestureDetector(
                                   onTap: () async {
                                     if (!enable!) {
@@ -247,6 +344,9 @@ class _PlayRadioState extends State<PlayRadio> {
                                     }
                                   },
                                   child: TextField(
+                                    textAlign: enable
+                                        ? TextAlign.start
+                                        : TextAlign.center,
                                     textCapitalization:
                                         TextCapitalization.sentences,
                                     style: const TextStyle(color: Colors.white),
@@ -263,74 +363,63 @@ class _PlayRadioState extends State<PlayRadio> {
                                           ));
                                     },
                                     decoration: InputDecoration(
+                                        disabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            borderSide:
+                                                BorderSide(color: Colors.grey)),
                                         contentPadding:
                                             const EdgeInsets.only(left: 15),
-                                        suffixIcon: IconButton(
-                                          onPressed: () async {
-                                            if (txtMessage.text.isEmpty) {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (builder) {
-                                                    return AlertDialog(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          25)),
-                                                      title: const Text(
-                                                          "Campo vacío"),
-                                                      content: const Text(
-                                                          "El campo no puede enviarse vacío."),
-                                                      actions: [
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context),
-                                                            child: const Text(
-                                                                "Ok"))
-                                                      ],
-                                                    );
-                                                  });
-                                            } else {
-                                              await db.insertChat(
-                                                  nombre: nombreUser,
-                                                  celular: numeroCelular,
-                                                  message: txtMessage.text);
+                                        suffixIcon: enable
+                                            ? IconButton(
+                                                onPressed: () async {
+                                                  await db.insertChat(
+                                                      nombre: nombreUser,
+                                                      celular: numeroCelular,
+                                                      message: txtMessage.text);
 
-                                              setState(
-                                                  () => txtMessage.clear());
+                                                  setState(
+                                                      () => txtMessage.clear());
 
-                                              Future.delayed(const Duration(
-                                                      milliseconds: 200))
-                                                  .then((value) => setState(
-                                                      () =>
-                                                          controller.animateTo(
-                                                            controller.position
-                                                                .maxScrollExtent,
-                                                            duration:
-                                                                const Duration(
-                                                                    seconds: 1),
-                                                            curve: Curves
-                                                                .fastOutSlowIn,
-                                                          )));
-                                            }
-                                          },
-                                          icon: Icon(
-                                            Icons.send,
-                                            color: enable
-                                                ? Colors.white
-                                                : Colors.grey,
-                                            size: 25,
-                                          ),
-                                        ),
+                                                  Future.delayed(const Duration(
+                                                          milliseconds: 200))
+                                                      .then((value) => setState(
+                                                          () => controller
+                                                                  .animateTo(
+                                                                controller
+                                                                    .position
+                                                                    .maxScrollExtent,
+                                                                duration:
+                                                                    const Duration(
+                                                                        seconds:
+                                                                            1),
+                                                                curve: Curves
+                                                                    .fastOutSlowIn,
+                                                              )));
+                                                },
+                                                icon: Icon(
+                                                  Icons.send,
+                                                  color: enable
+                                                      ? Colors.white
+                                                      : Colors.grey,
+                                                  size: 25,
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 0.0,
+                                                height: 0.0,
+                                              ),
                                         hintStyle: TextStyle(
                                             color: enable
                                                 ? Colors.white
                                                 : Colors.grey,
                                             fontSize: 13),
-                                        hintText: "Escriba su mensaje...",
+                                        hintText: enable
+                                            ? "Escriba su mensaje..."
+                                            : "¿Quieres chatear? Inicia sesión aquí.",
                                         border: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.white),
                                             borderRadius:
                                                 BorderRadius.circular(100))),
                                   ),
