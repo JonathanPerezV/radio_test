@@ -203,13 +203,12 @@ class _RadioPageState extends State<RadioPage> {
               future: UserPreferences().getLogin(),
               builder: (builder, snapshot) {
                 if (snapshot.data != null && snapshot.data!) {
-                  return const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                    ),
-                  );
+                  return IconButton(
+                      onPressed: () => showModal(),
+                      icon: const Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                      ));
                 } else {
                   return Container();
                 }
@@ -276,7 +275,7 @@ class _RadioPageState extends State<RadioPage> {
                     width: MediaQuery.of(context).size.width * 45,
                     child: cards[index]);
               },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 0,
               ),
@@ -285,6 +284,81 @@ class _RadioPageState extends State<RadioPage> {
         ],
       ),
     );
+  }
+
+  showModal() {
+    showModalBottomSheet(
+        elevation: 10,
+        barrierColor: const Color.fromRGBO(0, 0, 0, 50),
+        backgroundColor: const Color.fromRGBO(33, 29, 82, 1),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+        context: context,
+        builder: (builder) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                height: 30,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.settings, color: Colors.white),
+                    const SizedBox(width: 10),
+                    Text(
+                      "Configuraciones".toUpperCase(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: Divider(
+                  color: Colors.white,
+                  thickness: 0.5,
+                ),
+              ),
+              const ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.password, color: Colors.white),
+                    SizedBox(width: 10),
+                    Text(
+                      "Cambiar contraseña",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: Divider(
+                  color: Colors.white,
+                  thickness: 0.5,
+                ),
+              ),
+              const ListTile(
+                title: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.white),
+                    SizedBox(width: 10),
+                    Text(
+                      "Cerrar sesión",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          );
+        });
   }
 }
 
