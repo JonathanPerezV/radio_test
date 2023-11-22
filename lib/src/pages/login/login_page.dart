@@ -162,6 +162,11 @@ class _LoginPageState extends State<LoginPage> {
 
                               if (data == "ok") {
                                 await pfrc.saveLogin(true);
+                                
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Usuario encontrado")));
+                                Navigator.pop(context);
                               } else {
                                 showDialog(
                                     context: context,
@@ -170,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(25)),
-                                        title: Text(
+                                        title: const Text(
                                           "Error de autenticación",
                                           style: TextStyle(fontSize: 18),
                                         ),
@@ -179,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                                           TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(context),
-                                              child: Text("Regresar"))
+                                              child: const Text("Regresar"))
                                         ],
                                       );
                                     });

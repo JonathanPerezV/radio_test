@@ -54,19 +54,24 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
             currentPlaying = frpEvent.icyMetaDetails!;
             nowPlayingTextController.text = frpEvent.icyMetaDetails!;
           }
-          var statusIcon = const Icon(Icons.pause_circle_outline, size: 55);
+          var statusIcon = const Icon(Icons.pause_circle_outline,
+              size: 55, color: Colors.white);
           switch (frpEvent.playbackStatus) {
             case "flutter_radio_playing":
-              statusIcon = const Icon(Icons.pause_circle_outline, size: 55);
+              statusIcon = const Icon(Icons.pause_circle_outline,
+                  size: 55, color: Colors.white);
               break;
             case "flutter_radio_paused":
-              statusIcon = const Icon(Icons.play_circle_outline, size: 55);
+              statusIcon = const Icon(Icons.play_circle_outline,
+                  size: 55, color: Colors.white);
               break;
             case "flutter_radio_loading":
-              statusIcon = const Icon(Icons.refresh_rounded, size: 55);
+              statusIcon = const Icon(Icons.refresh_rounded,
+                  size: 55, color: Colors.white);
               break;
             case "flutter_radio_stopped":
-              statusIcon = const Icon(Icons.play_circle_outline, size: 55);
+              statusIcon = const Icon(Icons.play_circle_outline,
+                  size: 55, color: Colors.white);
               break;
           }
           return latestPlaybackStatus == "flutter_radio_stopped"
@@ -79,45 +84,12 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
               : Center(
                   child: Column(
                     children: [
-                      //Text(currentPlaying),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /* IconButton(
-                              onPressed: () async {
-                                widget.flutterRadioPlayer.previous();
-                                resetNowPlayingInfo();
-                              },
-                              icon: const Icon(Icons.skip_previous),
-                            ),*/
-                          /*Padding(
-                              padding: const EdgeInsets.only(right: 20),
-                              child:*/
-                          IconButton(
-                            color: Colors.white,
-                            onPressed: () async {
-                              widget.flutterRadioPlayer.playOrPause();
-                              resetNowPlayingInfo();
-                            },
-                            icon: statusIcon,
-                            //),
-                          ),
-                          /* IconButton(
-                              onPressed: () async {
-                                widget.flutterRadioPlayer.stop();
-                                resetNowPlayingInfo();
-                              },
-                              icon: const Icon(Icons.stop_circle_outlined),
-                            ),*/
-                          /*IconButton(
-                              onPressed: () async {
-                                widget.flutterRadioPlayer.next();
-                                resetNowPlayingInfo();
-                              },
-                              icon: const Icon(Icons.skip_next),
-                            ),*/
-                        ],
-                      ),
+                      GestureDetector(
+                          onTap: () async {
+                            widget.flutterRadioPlayer.playOrPause();
+                            resetNowPlayingInfo();
+                          },
+                          child: statusIcon),
                       Slider(
                         value: volume,
                         onChanged: (value) {

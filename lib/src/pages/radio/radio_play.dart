@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -25,6 +27,8 @@ class _PlayRadioState extends State<PlayRadio> {
   ScrollController controller = ScrollController();
 
   final txtMessage = TextEditingController();
+  String nombreUser = '';
+  String numeroCelular = '';
 
   final auth = FirebaseDatabase.instance;
   final ref = FirebaseDatabase.instance.ref('chat');
@@ -88,10 +92,16 @@ class _PlayRadioState extends State<PlayRadio> {
                   height: 340,
                   child: Stack(
                     children: [
-                      Image.asset("assets/horizontes.png"),
+                      Container(
+                        margin: const EdgeInsets.only(left: 10, right: 10),
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: Image.asset("assets/horizontes.png"),
+                      ),
                       Align(
                         alignment: Alignment.bottomCenter,
-                        child: SizedBox(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          width: MediaQuery.of(context).size.width * 1,
                           height: 120,
                           child: FRPlayer(
                             flutterRadioPlayer: _flutterRadioPlayer,
@@ -178,7 +188,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                                   .child("time")
                                                   .value
                                                   .toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 7),
                                             ),
@@ -205,22 +215,41 @@ class _PlayRadioState extends State<PlayRadio> {
                               future: UserPreferences().getLogin(),
                               builder:
                                   (context, AsyncSnapshot<bool?> snapshot) {
-                                bool enable = snapshot.hasData;
+                                bool? enable = snapshot.hasData;
 
                                 return GestureDetector(
                                   onTap: () async {
-                                    if (!enable) {
+                                    if (!enable!) {
                                       await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (builder) =>
-                                                  LoginPage())).then((value) =>
-                                          _flutterRadioPlayer
-                                              .addMediaSources(frpSource));
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (builder) =>
+                                                      const LoginPage()))
+                                          .then((value) async {
+                                        _flutterRadioPlayer
+                                            .addMediaSources(frpSource);
+                                        final data =
+                                            await UserPreferences().getLogin();
+
+                                        if (data != null && data) {
+                                          setState(() => enable = true);
+                                          final name = await UserPreferences()
+                                              .getUsername();
+                                          final phone = await UserPreferences()
+                                              .getCelular();
+
+                                          setState(() {
+                                            nombreUser = name!;
+                                            numeroCelular = phone!;
+                                          });
+                                        }
+                                      });
                                     }
                                   },
                                   child: TextField(
-                                    style: TextStyle(color: Colors.white),
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
+                                    style: const TextStyle(color: Colors.white),
                                     controller: txtMessage,
                                     scrollPadding: EdgeInsets.zero,
                                     enabled: enable,
@@ -249,23 +278,24 @@ class _PlayRadioState extends State<PlayRadio> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           25)),
-                                                      title:
-                                                          Text("Campo vacío"),
-                                                      content: Text(
+                                                      title: const Text(
+                                                          "Campo vacío"),
+                                                      content: const Text(
                                                           "El campo no puede enviarse vacío."),
                                                       actions: [
                                                         TextButton(
                                                             onPressed: () =>
                                                                 Navigator.pop(
                                                                     context),
-                                                            child: Text("Ok"))
+                                                            child: const Text(
+                                                                "Ok"))
                                                       ],
                                                     );
                                                   });
                                             } else {
                                               await db.insertChat(
-                                                  nombre: "Jonathan",
-                                                  idUsuario: 1,
+                                                  nombre: nombreUser,
+                                                  celular: numeroCelular,
                                                   message: txtMessage.text);
 
                                               setState(

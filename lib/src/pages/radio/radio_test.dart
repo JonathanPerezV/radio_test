@@ -24,6 +24,8 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
           elevation: 3,
@@ -63,6 +65,8 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
           elevation: 3,
@@ -102,6 +106,8 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
           elevation: 3,
@@ -141,6 +147,8 @@ class _RadioPageState extends State<RadioPage> {
             MaterialPageRoute(
                 builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           shadowColor: Colors.grey,
           //color: Color.fromRGBO(33, 29, 82, 1),
           elevation: 3,
@@ -200,6 +208,8 @@ class _RadioPageState extends State<RadioPage> {
             child: SizedBox(
               height: 150,
               child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 shadowColor: Colors.grey,
                 //color: Color.fromRGBO(33, 29, 82, 1),
                 elevation: 5,

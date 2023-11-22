@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 
 class FireBaseDB {
   final fireBaseApp = Firebase.app();
@@ -58,12 +59,17 @@ class FireBaseDB {
     final ref = await rtdb.ref("usuario").child(phone).get();
 
     if (ref.exists) {
-      print("usuario: ${ref.child("nombre").value}");
-
       final data = await rtdb.ref("usuario/$phone").child("contrasena").get();
 
       if (data.exists) {
         if (data.child("contrasena").value.toString() == password) {
+
+          final dataName =  await rtdb.ref("usuario/$phone").child("nombre").get();
+          final dataPhone =  await rtdb.ref("usuario/$phone").child("telefono").get();
+
+          await UserPreferences().saveUserName(dataName.child("nombre").value.toString());
+          await UserPreferences().saveCelular(dataPhone.child("telefono").value.toString());
+
           return "ok";
         } else {
           return "Contraseña incorrecta";
@@ -99,7 +105,7 @@ class FireBaseDB {
   Future<void> insertChat(
       {required String nombre,
       required String message,
-      required int idUsuario}) async {
+      required String celular}) async {
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
 
@@ -109,7 +115,7 @@ class FireBaseDB {
 
     final user = {
       "id_chat": id,
-      "id_usuario": idUsuario,
+      "id_usuario": celular,
       "date": DateFormat("dd-MM-yyyy").format(DateTime.now()),
       "time": DateFormat("HH:mm").format(DateTime.now()),
       "nombre_usuario": nombre,
