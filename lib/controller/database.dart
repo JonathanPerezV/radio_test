@@ -10,6 +10,7 @@ class FireBaseDB {
   final fireBaseApp = Firebase.app();
   final String _url = 'https://radio-db-2c0ea-default-rtdb.firebaseio.com/';
 
+  //todo deshuso
   Future<int> getLastUser() async {
     int value = 1;
     final rtdb =
@@ -28,6 +29,7 @@ class FireBaseDB {
     return value;
   }
 
+  //todo Registrar un nuevo usuario a la base de datos
   Future<void> insertUser(
       {required String nombre,
       required String apellido,
@@ -51,6 +53,7 @@ class FireBaseDB {
     await ref.set(user);
   }
 
+  //todo Autenticar al usuario para poder tener acceso al chat y configuración
   Future<String> authUser(
       {required String password, required String phone}) async {
     final rtdb =
@@ -86,9 +89,9 @@ class FireBaseDB {
   }
 
   //TODO CHAT
-
+  //todo Obtener último mensaje para poder asignar un id al siguiente
   Future<int> getLastChat() async {
-    int value = 1;
+    int value = 0;
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
 
@@ -105,7 +108,8 @@ class FireBaseDB {
     return value;
   }
 
-  Future<void> insertChat(
+  //todo Ingresar un nuevo mensaje a la base de datos
+  Future<void> insertMessage(
       {required String nombre,
       required String message,
       required String celular}) async {
@@ -128,6 +132,7 @@ class FireBaseDB {
     await ref.set(user);
   }
 
+  //todo Eliminar mensaje de la base de datos, solo administradores
   Future<String> deleteMessageAdmin(String idMessage, context) async {
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
@@ -187,4 +192,8 @@ class FireBaseDB {
       return "error";
     }
   }
+
+  /*Future<String> changePassword() async {
+
+  }*/
 }

@@ -35,13 +35,14 @@ dependencies:
   firebase_database: ^10.3.4
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_radio_player: ^2.0.2
   grouped_list: ^5.1.2
   intl: ^0.18.1
   modal_bottom_sheet: ^2.1.2
+  radio_player: ^1.5.0
   shared_preferences: ^2.2.2
-  flutter_localizations:
-    sdk: flutter
 
 dev_dependencies:
   flutter_lints: ^2.0.0

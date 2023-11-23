@@ -1,9 +1,10 @@
 // En tu código Flutter (Dart)
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
+import 'package:radio_test_player/src/pages/radio/test_radio_player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RadioPage extends StatefulWidget {
   const RadioPage({super.key});
@@ -218,10 +219,14 @@ class _RadioPageState extends State<RadioPage> {
       body: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
+            onTap: () async => await Navigator.push(
+                context, MaterialPageRoute(builder: (builder) => MyApp())),
+            /*Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            PlayRadio(name: "Radio Horizontes")))
+                .then((value) => setState(() {})),*/
             child: SizedBox(
               height: 150,
               child: Card(
@@ -343,19 +348,54 @@ class _RadioPageState extends State<RadioPage> {
                   thickness: 0.5,
                 ),
               ),
-              const ListTile(
-                title: Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text(
-                      "Cerrar sesión",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () => showModalLogOut(),
+                child: const ListTile(
+                  title: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.white),
+                      SizedBox(width: 10),
+                      Text(
+                        "Cerrar sesión",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
+            ],
+          );
+        });
+  }
+
+  void showModalLogOut() {
+    Navigator.pop(context);
+    showDialog(
+        context: context,
+        builder: (builder) {
+          return AlertDialog(
+            title: const Text("Cerrar sesión"),
+            content: const Text("¿Desea cerrar su sesión?"),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Cancelar")),
+                  TextButton(
+                      onPressed: () async {
+                        final pfrc = await SharedPreferences.getInstance();
+                        await pfrc.clear();
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Sesión terminada")));
+                        setState(() {});
+                      },
+                      child: const Text("Cerrar sesión")),
+                ],
+              )
             ],
           );
         });

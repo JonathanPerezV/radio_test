@@ -4,8 +4,9 @@
     <application
         android:label="Radio Horizontes"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:usesCleartextTraffic="true">
+        <service android:name=".core.StreamingCore"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,6 +23,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <meta-data
+                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+                android:resource="@drawable/launch_background"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -32,7 +36,5 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
-        <service android:name=".core.StreamingCore"/>
     </application>    
 </manifest>

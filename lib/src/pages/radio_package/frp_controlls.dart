@@ -77,7 +77,7 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
           return latestPlaybackStatus == "flutter_radio_stopped"
               ? ElevatedButton(
                   onPressed: () async {
-                    widget.addSourceFunction();
+                    await widget.addSourceFunction();
                   },
                   child: const Text("Reproducir"),
                 )
@@ -105,7 +105,7 @@ class _FRPPlayerControlsState extends State<FRPPlayerControls> {
         } else if (latestPlaybackStatus == "flutter_radio_stopped") {
           return ElevatedButton(
             onPressed: () async {
-              widget.addSourceFunction();
+              await widget.addSourceFunction();
             },
             child: const Text("Reproducir"),
           );
