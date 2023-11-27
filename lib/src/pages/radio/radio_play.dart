@@ -1,19 +1,13 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_radio_player/flutter_radio_player.dart';
-import 'package:flutter_radio_player/models/frp_source_modal.dart';
+import 'package:radio_player/radio_player.dart';
 import 'package:radio_test_player/controller/database.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/login/login_page.dart';
-import 'package:radio_test_player/src/pages/radio/test.dart';
-import 'package:radio_test_player/src/pages/radio_package/frp_player.dart';
 
 class PlayRadio extends StatefulWidget {
   String name;
@@ -24,6 +18,9 @@ class PlayRadio extends StatefulWidget {
 }
 
 class _PlayRadioState extends State<PlayRadio> {
+  RadioPlayer _radioPlayer = RadioPlayer();
+  bool isPlaying = false;
+
   late Timer timer;
   final db = FireBaseDB();
 
@@ -53,31 +50,16 @@ class _PlayRadioState extends State<PlayRadio> {
     setState(() => chatLeng = snapshot.children.length);
   }
 
-  final FlutterRadioPlayer _flutterRadioPlayer = FlutterRadioPlayer();
-
-  late FRPSource frpSource;
-
   @override
   void initState() {
     super.initState();
 
-    frpSource = FRPSource(
-      mediaSources: <MediaSources>[
-        MediaSources(
-          url:
-              "http://stream-153.zeno.fm/rxce5k6u5i5vv?zs=bHmqfjptRNyQtI4GdZOO7w", // dummy url
-          description: "Horizonte",
-          isPrimary: true,
-          title: "Tu radio favorita",
-          isAac: true,
-        ),
-      ],
-    );
-
-    inicializarRadio();
+    initRadioPlayer();
 
     //todo tiempo en milisegundos para darle tiempo a la inicialización
     Future.delayed(const Duration(milliseconds: 500)).then((_) {
+      _radioPlayer.play();
+      setState(() => isPlaying = true);
       initPhoneNumber();
       _getChatDataCount();
       timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -108,14 +90,21 @@ class _PlayRadioState extends State<PlayRadio> {
     });
   }
 
-  void inicializarRadio() async {
-    //todo inicializar radio
-    await _flutterRadioPlayer.initPlayer();
+  void initRadioPlayer() async {
+    _radioPlayer.setChannel(
+      title: 'Radio Player',
+      url: 'http://stream-153.zeno.fm/rxce5k6u5i5vv?zs=bHmqfjptRNyQtI4GdZOO7w',
+      imagePath: null,
+    );
 
-    Future.delayed(const Duration(milliseconds: 500));
+    _radioPlayer.stateStream.listen((value) {
+      setState(() {
+        isPlaying = value;
+      });
+    });
 
-    //todo asignar recursos a la radio
-    await _flutterRadioPlayer.addMediaSources(frpSource);
+    /*_radioPlayer.play();
+    setState(() => isPlaying = true);*/
   }
 
   void jumtoMaxScroll() {
@@ -139,12 +128,8 @@ class _PlayRadioState extends State<PlayRadio> {
   @override
   void dispose() {
     super.dispose();
-    detenerRadio();
+    _radioPlayer.stop();
     timer.cancel();
-  }
-
-  void detenerRadio() async {
-    await _flutterRadioPlayer.stop();
   }
 
   @override
@@ -155,7 +140,6 @@ class _PlayRadioState extends State<PlayRadio> {
         onTap: () {
           FocusScope.of(context).unfocus();
           setState(() => visibility = true);
-          if (!visibility) _flutterRadioPlayer.addMediaSources(frpSource);
         },
         child: Scaffold(
           backgroundColor: const Color.fromRGBO(33, 29, 82, 1),
@@ -166,8 +150,8 @@ class _PlayRadioState extends State<PlayRadio> {
                   Visibility(
                     visible: visibility,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 100,
-                      height: 340,
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: MediaQuery.of(context).size.height * 0.4,
                       child: Stack(
                         children: [
                           Container(
@@ -178,16 +162,24 @@ class _PlayRadioState extends State<PlayRadio> {
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 10, right: 10),
-                              width: MediaQuery.of(context).size.width * 1,
-                              height: 120,
-                              child: FRPlayer(
-                                flutterRadioPlayer: _flutterRadioPlayer,
-                                frpSource: frpSource,
-                                useIcyData: true,
-                              ),
-                            ),
+                                margin:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                width: MediaQuery.of(context).size.width * 1,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.09,
+                                child: IconButton(
+                                    onPressed: () {
+                                      isPlaying
+                                          ? _radioPlayer.pause()
+                                          : _radioPlayer.play();
+                                    },
+                                    icon: Icon(
+                                      isPlaying
+                                          ? Icons.pause_circle_outline_outlined
+                                          : Icons.play_circle_outline_outlined,
+                                      size: 55,
+                                      color: Colors.white,
+                                    ))),
                           ),
                           Positioned(
                             top: 30,
@@ -195,7 +187,7 @@ class _PlayRadioState extends State<PlayRadio> {
                             child: IconButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                _flutterRadioPlayer.stop();
+                                _radioPlayer.stop();
                               },
                               icon: const Icon(
                                 Icons.arrow_back,
@@ -359,8 +351,6 @@ class _PlayRadioState extends State<PlayRadio> {
                                                       builder: (builder) =>
                                                           const LoginPage()))
                                               .then((value) async {
-                                            _flutterRadioPlayer
-                                                .addMediaSources(frpSource);
                                             final data = await UserPreferences()
                                                 .getLogin();
 

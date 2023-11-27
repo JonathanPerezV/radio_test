@@ -25,9 +25,6 @@ PODS:
     - leveldb-library (~> 1.22)
   - FirebaseSharedSwift (10.18.0)
   - Flutter (1.0.0)
-  - flutter_radio_player (0.0.1):
-    - Flutter
-    - SwiftAudioEx
   - GoogleUtilities/Environment (7.12.0):
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.12.0):
@@ -35,17 +32,18 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.12.0)"
   - leveldb-library (1.22.2)
   - PromisesObjC (2.3.1)
+  - radio_player (0.0.1):
+    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - SwiftAudioEx (1.0.0)
 
 DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - FirebaseCore
   - Flutter (from `Flutter`)
-  - flutter_radio_player (from `.symlinks/plugins/flutter_radio_player/ios`)
+  - radio_player (from `.symlinks/plugins/radio_player/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 SPEC REPOS:
@@ -59,7 +57,6 @@ SPEC REPOS:
     - GoogleUtilities
     - leveldb-library
     - PromisesObjC
-    - SwiftAudioEx
 
 EXTERNAL SOURCES:
   firebase_core:
@@ -68,8 +65,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_database/ios"
   Flutter:
     :path: Flutter
-  flutter_radio_player:
-    :path: ".symlinks/plugins/flutter_radio_player/ios"
+  radio_player:
+    :path: ".symlinks/plugins/radio_player/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
@@ -83,12 +80,11 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 9a86c80a1a85db15c5c2b52f5829c333391e13fb
   FirebaseSharedSwift: 62e248642c0582324d0390706cadd314687c116b
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_radio_player: 1ef266ab949eba8d0b29b9d75761cc2faf912004
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  radio_player: f23691d16aafc0c21dab0b3006ac29f05a22398f
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
-  SwiftAudioEx: 6f511018b7a0fdfd14ed1bb4081f953588245cc0
 
 PODFILE CHECKSUM: d7622f67825acb873d8c18a9b76c1544ff868344
 

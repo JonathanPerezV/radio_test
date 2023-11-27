@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
-import 'package:radio_test_player/src/pages/radio/test_radio_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RadioPage extends StatefulWidget {
@@ -219,14 +218,12 @@ class _RadioPageState extends State<RadioPage> {
       body: Column(
         children: [
           GestureDetector(
-            onTap: () async => await Navigator.push(
-                context, MaterialPageRoute(builder: (builder) => MyApp())),
-            /*Navigator.push(
+            onTap: () async => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (builder) =>
                             PlayRadio(name: "Radio Horizontes")))
-                .then((value) => setState(() {})),*/
+                .then((value) => setState(() {})),
             child: SizedBox(
               height: 150,
               child: Card(
