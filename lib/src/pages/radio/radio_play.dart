@@ -30,6 +30,7 @@ class _PlayRadioState extends State<PlayRadio> {
   final txtMessage = TextEditingController();
   String nombreUser = '';
   String numeroCelular = '';
+  String apellidoUser = '';
 
   final auth = FirebaseDatabase.instance;
   final ref = FirebaseDatabase.instance.ref('chat');
@@ -253,7 +254,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                                         content: Text(
                                                             "Menesaje eliminado")));
                                               } else if (result == "no") {
-                                                print("no es admin");
+                                                debugPrint("no es admin");
                                               } else {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
@@ -271,26 +272,32 @@ class _PlayRadioState extends State<PlayRadio> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text(
-                                                    "${snapshot.child("nombre_usuario").value}: ${snapshot.child("message").value}",
-                                                    style: TextStyle(
-                                                        color: snapshot
-                                                                    .child(
-                                                                        "id_usuario")
-                                                                    .value
-                                                                    .toString() ==
-                                                                numeroCelular
-                                                            ? Colors.white
-                                                            : Colors.grey,
-                                                        fontSize: 13),
-                                                  ),
-                                                ),
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: RichText(
+                                                      text: TextSpan(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 13),
+                                                          children: [
+                                                            TextSpan(
+                                                                text:
+                                                                    "${snapshot.child("nombre_usuario").value} ${snapshot.child("apellido_usuario").value ?? ""}: ",
+                                                                style: const TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            TextSpan(
+                                                                text:
+                                                                    "${snapshot.child("message").value}")
+                                                          ]),
+                                                    )),
                                                 Align(
                                                   alignment:
                                                       Alignment.centerRight,
-                                                  child: Container(
+                                                  child: SizedBox(
                                                     width: 63,
                                                     child: Text(
                                                       "${snapshot.child("time").value.toString()} | ${snapshot.child("date").value.toString().split("-")[1]}/${snapshot.child("date").value.toString().split("-")[2]}",
@@ -321,11 +328,11 @@ class _PlayRadioState extends State<PlayRadio> {
                                           width: 30,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
+                                              color: const Color.fromRGBO(
                                                   255, 255, 255, 70),
                                               borderRadius:
                                                   BorderRadius.circular(100)),
-                                          child: Icon(Icons
+                                          child: const Icon(Icons
                                               .keyboard_double_arrow_down_rounded),
                                         ),
                                       ))
@@ -363,9 +370,14 @@ class _PlayRadioState extends State<PlayRadio> {
                                                   await UserPreferences()
                                                       .getCelular();
 
+                                              final lastname =
+                                                  await UserPreferences()
+                                                      .getUserLastname();
+
                                               setState(() {
                                                 nombreUser = name!;
                                                 numeroCelular = phone!;
+                                                apellidoUser = lastname!;
                                               });
                                             }
                                           });
@@ -396,7 +408,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                             disabledBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(100),
-                                                borderSide: BorderSide(
+                                                borderSide: const BorderSide(
                                                     color: Colors.grey)),
                                             contentPadding:
                                                 const EdgeInsets.only(left: 15),
@@ -404,6 +416,8 @@ class _PlayRadioState extends State<PlayRadio> {
                                                 ? IconButton(
                                                     onPressed: () async {
                                                       await db.insertMessage(
+                                                          apellido:
+                                                              apellidoUser,
                                                           nombre: nombreUser,
                                                           celular:
                                                               numeroCelular,
@@ -439,7 +453,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                                       size: 25,
                                                     ),
                                                   )
-                                                : Container(
+                                                : SizedBox(
                                                     width: 0.0,
                                                     height: 0.0,
                                                   ),
@@ -452,7 +466,7 @@ class _PlayRadioState extends State<PlayRadio> {
                                                 ? "Escriba su mensaje..."
                                                 : "¿Quieres chatear? Inicia sesión aquí.",
                                             border: OutlineInputBorder(
-                                                borderSide: BorderSide(
+                                                borderSide: const BorderSide(
                                                     color: Colors.white),
                                                 borderRadius:
                                                     BorderRadius.circular(

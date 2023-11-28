@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {
+  //todo GUARDAR NOMBRE DEL USUARIO PARA PRESENTAR EN LA APLICACION
   Future<void> saveUserName(String name) async {
     final pfrc = await SharedPreferences.getInstance();
 
@@ -13,6 +14,20 @@ class UserPreferences {
     return preferences.getString("name");
   }
 
+  //todo GUARDAR APELLIDO DEL USUARIO PARA PRESENTAR EN LA APLICACION
+  Future<void> saveUserLastName(String lastname) async{
+      final pfrc = await SharedPreferences.getInstance();
+
+      await pfrc.setString("lastname", lastname);
+  }
+
+  Future<String?> getUserLastname() async {
+      final pfrc = await SharedPreferences.getInstance();
+
+      return pfrc.getString("lastname");
+  }
+
+  //todo GUARDAR CORREO DEL USUARIO PARA PRESENTAR EN LA APLICACION
   Future<void> saveMail(mail) async {
     final pfrc = await SharedPreferences.getInstance();
 

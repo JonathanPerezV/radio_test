@@ -68,6 +68,10 @@ class FireBaseDB {
         if (data.child("contrasena").value.toString() == password) {
           final dataName =
               await rtdb.ref("usuario/$phone").child("nombre").get();
+
+          final dataLastName =
+              await rtdb.ref("usuario/$phone").child("apellido").get();
+
           final dataPhone =
               await rtdb.ref("usuario/$phone").child("telefono").get();
 
@@ -75,6 +79,11 @@ class FireBaseDB {
               .saveUserName(dataName.child("nombre").value.toString());
           await UserPreferences()
               .saveCelular(dataPhone.child("telefono").value.toString());
+          await UserPreferences().saveUserLastName(
+              dataLastName.child("apellido").value.toString());
+
+          debugPrint(
+              "Apellido: ${dataLastName.child("apellido").value.toString()}");
 
           return "ok";
         } else {
@@ -112,7 +121,8 @@ class FireBaseDB {
   Future<void> insertMessage(
       {required String nombre,
       required String message,
-      required String celular}) async {
+      required String celular,
+      required String apellido}) async {
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
 
@@ -120,16 +130,17 @@ class FireBaseDB {
 
     final ref = rtdb.ref("chat/$id");
 
-    final user = {
+    final chat= {
       "id_chat": id,
       "id_usuario": celular,
       "date": DateFormat("yyyy-MM-dd").format(DateTime.now()),
       "time": DateFormat("HH:mm").format(DateTime.now()),
       "nombre_usuario": nombre,
+      "apellido_usuario": apellido,
       "message": message
     };
 
-    await ref.set(user);
+    await ref.set(chat);
   }
 
   //todo Eliminar mensaje de la base de datos, solo administradores
