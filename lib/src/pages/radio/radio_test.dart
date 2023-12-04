@@ -2,6 +2,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
+import 'package:radio_test_player/src/pages/contact_us/contact_us.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -143,28 +144,17 @@ class _RadioPageState extends State<RadioPage> {
         ),
       ),
       GestureDetector(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (builder) => const ContactUs())),
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           shadowColor: Colors.grey,
-          //color: Color.fromRGBO(33, 29, 82, 1),
           elevation: 3,
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.blue.shade900
-                /*gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blueAccent,
-                      Color.fromRGBO(33, 29, 82, 1)
-                    ])*/
-                ),
+                color: Colors.blue.shade900),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
