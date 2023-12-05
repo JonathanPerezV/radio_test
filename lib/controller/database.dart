@@ -130,7 +130,7 @@ class FireBaseDB {
 
     final ref = rtdb.ref("chat/$id");
 
-    final chat= {
+    final chat = {
       "id_chat": id,
       "id_usuario": celular,
       "date": DateFormat("yyyy-MM-dd").format(DateTime.now()),
@@ -204,7 +204,5 @@ class FireBaseDB {
     }
   }
 
-  /*Future<String> changePassword() async {
-
-  }*/
+  //Future
 }

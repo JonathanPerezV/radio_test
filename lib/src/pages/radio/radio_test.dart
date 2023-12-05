@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
 import 'package:radio_test_player/src/pages/contact_us/contact_us.dart';
+import 'package:radio_test_player/src/pages/prog/programming.dart';
+import 'package:radio_test_player/src/pages/quienes_somos/quienes_somos.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,10 +23,8 @@ class _RadioPageState extends State<RadioPage> {
     super.initState();
     cards = [
       GestureDetector(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (builder) => const Programming())),
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -33,15 +33,7 @@ class _RadioPageState extends State<RadioPage> {
           elevation: 3,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.red
-                /*gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blueAccent,
-                      Color.fromRGBO(33, 29, 82, 1)
-                    ])*/
-                ),
+                borderRadius: BorderRadius.circular(10), color: Colors.red),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -62,10 +54,8 @@ class _RadioPageState extends State<RadioPage> {
         ),
       ),
       GestureDetector(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (builder) => const QuienesSomos())),
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -74,21 +64,13 @@ class _RadioPageState extends State<RadioPage> {
           elevation: 3,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.green
-                /*gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blueAccent,
-                      Color.fromRGBO(33, 29, 82, 1)
-                    ])*/
-                ),
+                borderRadius: BorderRadius.circular(10), color: Colors.green),
             child: const Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Quienes somos",
+                    "Quiénes somos",
                     style: TextStyle(color: Colors.white),
                   ),
                   SizedBox(width: 5),
