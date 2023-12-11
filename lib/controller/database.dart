@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +37,10 @@ class FireBaseDB {
       required String contrasena,
       required String telefono,
       required String correo}) async {
-
-    //todo INSTANCIA A LA BD   
+    //todo INSTANCIA A LA BD
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
-      
+
     //todo SE CREA LA REFERENCIA CON EL NUEVO NÚMERO DE TELÉFONOS
     final ref = rtdb.ref("usuario/$telefono");
 
@@ -57,7 +59,6 @@ class FireBaseDB {
   //todo Autenticar al usuario para poder tener acceso al chat y configuración
   Future<String> authUser(
       {required String password, required String phone}) async {
-
     //todo INSTANCIA A LA BD
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
@@ -67,12 +68,10 @@ class FireBaseDB {
 
     //todo VALIDAR QUE ESTE REGISTRO EXISTA
     if (ref.exists) {
-
       //todo de este nodo que si existe obtenemos la contraseña
       final data = await rtdb.ref("usuario/$phone").child("contrasena").get();
 
       if (data.exists) {
-
         //todo COMPARAMOS CONTRASEÑAS
         if (data.child("contrasena").value.toString() == password) {
           //todo OBTENER DATOS DE USUARIO
@@ -133,7 +132,6 @@ class FireBaseDB {
       required String message,
       required String celular,
       required String apellido}) async {
-    
     //todo Instancia a la bd
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
@@ -173,7 +171,6 @@ class FireBaseDB {
 
     //todo valido si el usuario existe
     if (phoneRef.exists) {
-
       //todo realizo una referencia al nodo chat
       final chatRef = rtdb.ref("chat");
 
@@ -182,8 +179,7 @@ class FireBaseDB {
 
       //todo valido que este usuario tenga la bandera
       if (adminRef.exists) {
-
-        //todo obtengo el mensaje a eliminar 
+        //todo obtengo el mensaje a eliminar
         final messageRef = await chatRef.child(idMessage.toString()).get();
 
         //todo valido que este mensaje exista
@@ -227,5 +223,63 @@ class FireBaseDB {
     } else {
       return "error";
     }
+  }
+
+  //todo CAMBIO DE CONTRASEÑA
+  //todo VALIDAR QUE LA CONTRASEÑA ACTUAL SEA CORRECTA
+  Future<String> validateUserPass(String password) async {
+    final rtdb =
+        FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
+
+    //todo Conversión de string a bytes y a md5
+    final bytes = utf8.encode(password);
+
+    final passwordEncrypted = md5.convert(bytes).toString();
+
+    //todo obtener el celular del usuario
+    final phone = await UserPreferences().getCelular();
+
+    //todo asigno la referencia del nodo usuario
+    final userRef = rtdb.ref("usuario");
+
+    //todo obtener la data por medio de la clave primaria(celular) del usuario.
+    final phoneRef = await userRef.child("$phone").get();
+
+    if (phoneRef.exists) {
+      //todo obtener la contraseña del usuario
+      final password = await userRef.child("$phone/contrasena").get();
+
+      if (password.value.toString() == passwordEncrypted) {
+        return "ok";
+      } else {
+        return "La contraseña actual es incorrecta";
+      }
+    } else {
+      return "Usuario no existe";
+    }
+  }
+
+  Future<String> updateUserPass(String newPass) async {
+    final rtdb =
+        FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
+
+    //todo Conversión de string a bytes y a md5
+    final bytes = utf8.encode(newPass);
+
+    final passwordEncrypted = md5.convert(bytes).toString();
+
+    //todo obtener el celular del usuario
+    final phone = await UserPreferences().getCelular();
+
+    //todo asigno la referencia del nodo usuario
+    final userRef = rtdb.ref("usuario");
+
+    //todo ref al campo contrasena
+    final refPass = userRef.child("$phone/contrasena");
+
+    //todo actualizar contraseña
+    await refPass.set(passwordEncrypted);
+
+    return "ok";
   }
 }

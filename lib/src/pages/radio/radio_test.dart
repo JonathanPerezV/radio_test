@@ -2,6 +2,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
+import 'package:radio_test_player/src/pages/config/change_password.dart';
 import 'package:radio_test_player/src/pages/contact_us/contact_us.dart';
 import 'package:radio_test_player/src/pages/prog/programming.dart';
 import 'package:radio_test_player/src/pages/quienes_somos/quienes_somos.dart';
@@ -299,16 +300,25 @@ class _RadioPageState extends State<RadioPage> {
                   thickness: 0.5,
                 ),
               ),
-              const ListTile(
-                title: Row(
-                  children: [
-                    Icon(Icons.password, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text(
-                      "Cambiar contraseña",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const ChangePassword()));
+                },
+                child: const ListTile(
+                  title: Row(
+                    children: [
+                      Icon(Icons.password, color: Colors.white),
+                      SizedBox(width: 10),
+                      Text(
+                        "Cambiar contraseña",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Padding(
