@@ -27,7 +27,7 @@ class UserPreferences {
       return pfrc.getString("lastname");
   }
 
-  //todo GUARDAR CORREO DEL USUARIO PARA PRESENTAR EN LA APLICACION
+  //todo GUARDAR CORREO DEL USUARIO PARA PRESENTAR EN LA APLICACION(OPCIONAL)
   Future<void> saveMail(mail) async {
     final pfrc = await SharedPreferences.getInstance();
 
@@ -39,6 +39,7 @@ class UserPreferences {
     return pfrc.getString("mail");
   }
 
+  //todo CLAVE PRIMARIA DEL USUARIO, PARA REALIZAR ALGUNA ACTUALIZACIÓN DE SUS DATOS COMO LA CONTRASEÑA
   Future<void> saveCelular(String celular) async {
     final pfrc = await SharedPreferences.getInstance();
     await pfrc.setString("celular", celular);
@@ -49,6 +50,7 @@ class UserPreferences {
     return pfrc.getString("celular");
   }
 
+  //todo PARA VALIDAR SI EL USUARIO INICIO SESIÓN Y A TRAVES DE ELLO PERMITIRLE ACCEDER A CIERTAS FUNCIONES DE LA APP
   Future<void> saveLogin(bool login) async {
     final pfrc = await SharedPreferences.getInstance();
     await pfrc.setBool("login", login);

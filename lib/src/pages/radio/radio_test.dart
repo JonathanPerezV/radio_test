@@ -8,6 +8,7 @@ import 'package:radio_test_player/src/pages/quienes_somos/quienes_somos.dart';
 import 'package:radio_test_player/src/pages/radio/radio_play.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//todo PÁGINA CONTENEDORA DE LOS BOTONES
 class RadioPage extends StatefulWidget {
   const RadioPage({super.key});
 

@@ -18,14 +18,17 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final formKey = GlobalKey<FormState>();
 
+  //todo CONTROLADORES DEL TEXTO
   final txtName = TextEditingController();
   final txtApellido = TextEditingController();
   final txtPhone = TextEditingController();
   final txtMail = TextEditingController();
   final txtPass = TextEditingController();
 
+  //todo instancia a la bd
   final db = FireBaseDB();
   final pfrc = UserPreferences();
+
   bool loading = false;
   bool obscure = true;
 
@@ -232,11 +235,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               MaterialStatePropertyAll(Colors.yellow)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          //todo Codifico la contraseña por medio de MD5
                           final bytes = utf8.encode(txtPass.text);
                           var newPassword = md5.convert(bytes).toString();
 
                           setState(() => loading = true);
 
+                          //todo INSERTAR USUARIO EN LA BD
                           await db.insertUser(
                               apellido: txtApellido.text,
                               nombre: txtName.text,

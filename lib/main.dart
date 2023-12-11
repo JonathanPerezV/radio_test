@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:radio_test_player/firebase_options.dart';
 import 'package:radio_test_player/src/pages/radio/radio_test.dart';
 
+//todo MAIN ACTIVIDY(INICIALIZACIÓN DE LA APLICACIÓN)
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,9 +35,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-//todo DEVELOPER APP:
-//todo Tec. Jonathan Pérez
-//todo 0994911674
-//todo jonathan.perez1999@hotmail.com

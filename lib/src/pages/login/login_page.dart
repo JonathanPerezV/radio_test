@@ -152,15 +152,18 @@ class _LoginPageState extends State<LoginPage> {
                                   MaterialStatePropertyAll(Colors.yellow)),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
+                              //todo encriptamos la contraseña
                               final bytes = utf8.encode(txtPass.text);
                               var newPassword = md5.convert(bytes).toString();
 
                               setState(() => loading = true);
 
+                              //todo autenticación del usuario
                               final data = await db.authUser(
                                   phone: txtPhone.text, password: newPassword);
 
                               if (data == "ok") {
+                                //todo USUARIO INICIO SESIÓN
                                 await pfrc.saveLogin(true);
                                 
                                 ScaffoldMessenger.of(context).showSnackBar(
