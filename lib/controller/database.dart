@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
@@ -36,24 +38,41 @@ class FireBaseDB {
       required String apellido,
       required String contrasena,
       required String telefono,
-      required String correo}) async {
+      required String correo,
+      required BuildContext context}) async {
     //todo INSTANCIA A LA BD
     final rtdb =
         FirebaseDatabase.instanceFor(app: fireBaseApp, databaseURL: _url);
 
-    //todo SE CREA LA REFERENCIA CON EL NUEVO NÚMERO DE TELÉFONOS
-    final ref = rtdb.ref("usuario/$telefono");
+    //todo SE CREA LA REFERENCIA CON EL NUEVO NÚMERO DE TELÉFONOS PARA VER SI EXISTE
+    final ref = await rtdb.ref("usuario/$telefono").get();
 
-    final user = {
-      "id_usuario": correo,
-      "nombre": nombre,
-      "apellido": apellido,
-      "telefono": telefono,
-      "contrasena": contrasena,
-      "correo": correo
-    };
+    //todo SE CREA LA REFERENCIA CON EL NUMERO DE TELEFONO DEL USUARIO PARA CREAR EN CASO DE QUE NO EXISTA
+    final refUser = rtdb.ref("usuario/$telefono");
 
-    await ref.set(user);
+    if (ref.exists) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Este usuario ya existe, intente con otro número de celular"),
+          duration: Duration(seconds: 3)));
+    } else {
+      final user = {
+        "id_usuario": correo,
+        "nombre": nombre,
+        "apellido": apellido,
+        "telefono": telefono,
+        "contrasena": contrasena,
+        "correo": correo
+      };
+
+      await refUser.set(user);
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  "Usuario creado correctamente. Inicie sesión para continuar")));
+
+      Navigator.pop(context);
+    }
   }
 
   //todo Autenticar al usuario para poder tener acceso al chat y configuración

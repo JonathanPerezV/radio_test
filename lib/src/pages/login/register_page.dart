@@ -247,17 +247,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               nombre: txtName.text,
                               correo: txtMail.text,
                               telefono: txtPhone.text,
-                              contrasena: newPassword);
+                              contrasena: newPassword,
+                              context: context);
 
                           await pfrc.saveCelular(txtPhone.text);
                           await pfrc.saveMail(txtMail.text);
                           await pfrc.saveUserName(txtName.text);
 
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text(
-                                  "Usuario creado correctamente. Inicie sesión para continuar")));
+                          
 
-                          Navigator.pop(context);
+                          //Navigator.pop(context);
 
                           setState(() => loading = false);
                         } else {
