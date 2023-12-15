@@ -2,6 +2,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:radio_test_player/controller/preferences/user_preferences.dart';
+import 'package:radio_test_player/src/pages/cobertura/cobertura.dart';
 import 'package:radio_test_player/src/pages/config/change_password.dart';
 import 'package:radio_test_player/src/pages/contact_us/contact_us.dart';
 import 'package:radio_test_player/src/pages/prog/programming.dart';
@@ -90,7 +91,7 @@ class _RadioPageState extends State<RadioPage> {
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (builder) => PlayRadio(name: "Radio Horizontes"))),
+                builder: (builder) => CoberturaPage())),
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
